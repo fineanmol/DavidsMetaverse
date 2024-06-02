@@ -36,7 +36,7 @@ export const Projects = ()=>{
             <group position={[0, -0.5, 0]}>
             <Frames images={images} />
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[50, 50]} />
+            <planeGeometry args={[3, 9]} />
             <MeshReflectorMaterial
                 blur={[300, 100]}
                 resolution={2048}

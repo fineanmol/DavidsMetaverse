@@ -33,9 +33,6 @@ export function Overlay(){
         <h1>Contact me</h1>A table is an item of furniture with a flat top and one or more legs, used as a surface for working at, eating from or on which to place things.[1][2]
       </div>
     </div>
-    {/* <span class="caption" ref={caption}>
-      {scroll.current.toFixed(2)}
-    </span> */}
   </div>
 )}
 
