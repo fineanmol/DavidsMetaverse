@@ -19,29 +19,41 @@ import { Intro } from './Intro'
 import { Soda } from './Models'
 import { Skills } from './Skills'
 import { Overlay } from './Overlay'
-import ThreeD from './3d'
-import Lenis from '@studio-freight/lenis'
+import Lenis from 'lenis'
+import Snap from 'lenis/snap'
 
-const lenis = new Lenis({ syncTouch: true })
-// Integrate into fibers own raf loop instead of opening another
-addEffect((t) => lenis.raf(t))
 
 
 export function  App() {
+
+  const lenis = new Lenis(
+    { 
+      syncTouch: true,
+      lerp: 0.1,
+      smooth: true,
+      syncTouch: true,
+      direction: "vertical"
+    })
+
+  const snap = new Snap(lenis, {
+    type: 'proximity', // default
+    velocityThreshold: 1, // default
+    onSnapStart: () => console.log('Snap started'),
+    onSnapComplete: () => console.log('Snap completed'),
+    lerp: 0.05, // default
+    easing: (t) => t, // default
+    duration: 10000, 
+  })
+  snap.add(window.innerHeight);
+  snap.add(window.innerHeight * 2);
+  snap.add(window.innerHeight * 3);
+
+  addEffect((t) => lenis.raf(t))
+   
   //scrollcontrol
   const container = useRef()
 
-  useEffect(() => {
-    if (container.current) {
-      lenis.start();
-      lenis.on('scroll', ({ scroll }) => {
-        console.log('Current scroll position:', scroll);
-      });
-    }
-    return () => {
-      lenis.stop();
-    };
-  }, []);
+
   
   return (
     <>
@@ -86,12 +98,10 @@ export function  App() {
             <View.Port />
           </Canvas>
           <Overlay />
-          
-          
         </div>
         
         
-        </>
+    </>
     //   )
     // }
   )

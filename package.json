@@ -10,6 +10,7 @@
     "@react-three/postprocessing": "^2.7.1",
     "@studio-freight/lenis": "^1.0.42",
     "@types/three": "0.146.0",
+    "lenis": "^1.1.1",
     "leva": "^0.9.35",
     "react": "18.2.0",
     "react-dom": "18.2.0",

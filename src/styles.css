@@ -18,7 +18,7 @@ body,
   position: absolute;
   top: 0;
   left: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .dot {
   pointer-events: none;
@@ -64,13 +64,14 @@ body {
 }
 
 .container { 
-  overflow-y: auto;
-  overflow-x: auto;
   position: absolute;
+  overflow: hidden;
+  scroll-snap-type: y mandatory;  /* Enable vertical scroll snapping */
 }
 .View{
   width: 100vw; /* Full viewport width */
   height: 100vh; /* Full viewport height *//* Snap to start of each view */
+  scroll-snap-align: start;
 }
 .View-HorizontalScroll{
 
@@ -88,10 +89,10 @@ svg {
 .canvas {
 
   position: fixed !important;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
   overflow: hidden;
 }
 
