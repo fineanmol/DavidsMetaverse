@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useEffect, Suspense } from 'react'
 import { Canvas, useFrame, useThree, addEffect } from '@react-three/fiber'
-import { ScrollControls, Scroll, useCursor, MeshReflectorMaterial, CameraShake, Text, Preload,useScroll,Image as ImageImpl } from '@react-three/drei'
+import { useProgress, PerformanceMonitor, ScrollControls, Scroll, useCursor, MeshReflectorMaterial, CameraShake, Text, Preload,useScroll,Image as ImageImpl } from '@react-three/drei'
 import {
   View,
   Bounds,
@@ -15,6 +15,7 @@ import {
   Center
 } from '@react-three/drei'
 import { Projects } from './Projects'
+import { ResponsiveAppBar } from './Navbar'
 import { Intro } from './Intro'
 import { Soda } from './Models'
 import { Skills } from './Skills'
@@ -23,42 +24,50 @@ import Lenis from 'lenis'
 import Snap from 'lenis/snap'
 
 
-
-export function  App() {
-
-  const lenis = new Lenis(
-    { 
-      syncTouch: true,
-      lerp: 0.1,
-      smooth: true,
-      syncTouch: true,
-      direction: "vertical"
-    })
-
-  const snap = new Snap(lenis, {
-    type: 'proximity', // default
-    velocityThreshold: 1, // default
-    onSnapStart: () => console.log('Snap started'),
-    onSnapComplete: () => console.log('Snap completed'),
-    lerp: 0.05, // default
-    easing: (t) => t, // default
-    duration: 10000, 
+const lenis = new Lenis(
+  { 
+    syncTouch: true,
+    lerp: 0.1,
+    smooth: true,
+    syncTouch: true,
+    direction: "vertical"
   })
-  snap.add(window.innerHeight);
-  snap.add(window.innerHeight * 2);
-  snap.add(window.innerHeight * 3);
 
-  addEffect((t) => lenis.raf(t))
-   
+const snap = new Snap(lenis, {
+  type: 'proximity', // default
+  velocityThreshold: 1, // default
+  onSnapStart: () => console.log('Snap started'),
+  onSnapComplete: () => console.log('Snap completed'),
+  lerp: 0.05, // default
+  easing: (t) => t, // default
+  duration: 10000, 
+})
+snap.add(window.innerHeight);
+snap.add(window.innerHeight * 2);
+snap.add(window.innerHeight * 3);
+
+addEffect((t) => lenis.raf(t))
+
+// const audio = new Audio("./audios/Song Of Unity.mp3");
+export function  App() {
+  const [start, setStart] = useState(true);
   //scrollcontrol
   const container = useRef()
 
+  // useEffect(() => {
+  //   if (start) {
+  //     audio.play();
+  //   }
+  // }, [start]);  
 
   
   return (
     <>
+        {start && <ResponsiveAppBar />}
         <div className="container" ref={container}>
-          {/* Views */}
+          
+
+            {/* Views */}
             <View index={0} className='View'>
               <Lights preset="dawn" />
               <Environment files={'/aerodynamics_workshop_1k.hdr'} baackground blur={0.5} />
@@ -91,14 +100,21 @@ export function  App() {
                   </Center>
                 </PivotControls>
             </View>
-          {/* </div> */}
-          {/* ThreeD */}
+
+            {/* ThreeD */}
           
-          <Canvas gl={{antialias: false}} dpr={[1, 1.5]} shadows  eventSource={document.getElementById('root')} className='canvas'>
-            <View.Port />
-          </Canvas>
-          <Overlay />
+            <Canvas gl={{antialias: false}} dpr={[0.5, 1]} shadows  eventSource={document.getElementById('root')} className='canvas'>
+              <Suspense fallback={null}>
+                <View.Port /> 
+              </Suspense>
+            </Canvas>
+            {start && <Overlay /> }
+            
+            
+
+            {/* {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />} */}
         </div>
+        
         
         
     </>
@@ -107,6 +123,30 @@ export function  App() {
   )
   
 }
+
+const LoadingScreen = ({ started, onStarted }) => {
+  const { progress } = useProgress();
+  console.log(progress)
+
+  useEffect(() => {
+    if (progress === 100 && !started) {
+      onStarted();
+    }
+  }, [progress, started, onStarted]);
+
+  return (
+    <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}>
+      <div className="loadingScreen__progress">
+        <div
+          className="loadingScreen__progress__value"
+          style={{
+            width: `${progress}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
 
 function Lights({ preset }) {
   return (
