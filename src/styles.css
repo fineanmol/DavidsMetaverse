@@ -12,6 +12,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  pointer-events: auto;
 }
 .scroll {
   height: 500vh;
@@ -19,9 +20,9 @@ body,
   top: 0;
   left: 0;
   overflow-y: auto;
+  pointer-events: auto;
 }
 .dot {
-  pointer-events: none;
   position: sticky;
   top: 0px;
   display: inline-block;
@@ -36,7 +37,6 @@ body,
 
 .dot > h1 {
   -webkit-font-smoothing: auto;
-  pointer-events: none;
   color: black;
   font-size: 5em;
   font-weight: 100;
@@ -50,7 +50,6 @@ body {
   font-family: inter;
 }
 .caption {
-  pointer-events: none;
   position: fixed;
   top: 0;
   right: 0;
@@ -67,6 +66,7 @@ body {
   position: absolute;
   overflow: hidden;
   scroll-snap-type: y mandatory;  /* Enable vertical scroll snapping */
+  pointer-events: auto;
 }
 .View{
   width: 100vw; /* Full viewport width */
@@ -87,7 +87,7 @@ svg {
 }
 
 .canvas {
-
+  pointer-events: none;
   position: fixed !important;
   top: 10px;
   left: 10px;
@@ -119,9 +119,10 @@ svg {
 
 .loadingScreen__progress {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 100%;
+  max-width: 400px;
   height: 4px;
 }
 .loadingScreen__progress__value {

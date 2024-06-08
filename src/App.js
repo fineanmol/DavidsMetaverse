@@ -30,17 +30,18 @@ const lenis = new Lenis(
     lerp: 0.1,
     smooth: true,
     syncTouch: true,
-    direction: "vertical"
+    direction: "vertical",
+    autoResize: true,
   })
 
 const snap = new Snap(lenis, {
-  type: 'proximity', // default
+  type: 'mandatory', // default
   velocityThreshold: 1, // default
   onSnapStart: () => console.log('Snap started'),
   onSnapComplete: () => console.log('Snap completed'),
   lerp: 0.05, // default
   easing: (t) => t, // default
-  duration: 10000, 
+  duration: 1, 
 })
 snap.add(window.innerHeight);
 snap.add(window.innerHeight * 2);
@@ -51,6 +52,7 @@ addEffect((t) => lenis.raf(t))
 // const audio = new Audio("./audios/Song Of Unity.mp3");
 export function  App() {
   const [start, setStart] = useState(true);
+  const [dpr, setDpr] = useState(1.5)
   //scrollcontrol
   const container = useRef()
 
@@ -63,12 +65,12 @@ export function  App() {
   
   return (
     <>
-        {start && <ResponsiveAppBar />}
-        <div className="container" ref={container}>
+        
+        <div className="container" ref={container} id='container'>
           
 
             {/* Views */}
-            <View index={0} className='View'>
+            <View index={0} className='View' id="Intro" >
               <Lights preset="dawn" />
               <Environment files={'/aerodynamics_workshop_1k.hdr'} baackground blur={0.5} />
               <color attach="background" args={["#fff"]} />
@@ -103,16 +105,19 @@ export function  App() {
 
             {/* ThreeD */}
           
-            <Canvas gl={{antialias: false}} dpr={[0.5, 1]} shadows  eventSource={document.getElementById('root')} className='canvas'>
-              <Suspense fallback={null}>
-                <View.Port /> 
-              </Suspense>
+            <Canvas frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} className='canvas'>
+              <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
+                <Suspense fallback={null}>
+                  <View.Port /> 
+                </Suspense>
+              </PerformanceMonitor>
             </Canvas>
             {start && <Overlay /> }
+            {start && <ResponsiveAppBar lenis={lenis}/>}
             
             
 
-            {/* {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />} */}
+            {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />}
         </div>
         
         
@@ -133,7 +138,7 @@ const LoadingScreen = ({ started, onStarted }) => {
       onStarted();
     }
   }, [progress, started, onStarted]);
-
+  console.log("loading screen")
   return (
     <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}>
       <div className="loadingScreen__progress">
