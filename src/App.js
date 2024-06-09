@@ -51,7 +51,7 @@ addEffect((t) => lenis.raf(t))
 
 // const audio = new Audio("./audios/Song Of Unity.mp3");
 export function  App() {
-  const [start, setStart] = useState(true);
+  const [start, setStart] = useState(false);
   const [dpr, setDpr] = useState(1.5)
   //scrollcontrol
   const container = useRef()
@@ -105,7 +105,7 @@ export function  App() {
 
             {/* ThreeD */}
           
-            <Canvas frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} className='canvas'>
+            <Canvas frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} eventPrefix='client' className='canvas'>
               <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
                 <Suspense fallback={null}>
                   <View.Port /> 
@@ -117,7 +117,7 @@ export function  App() {
             
             
 
-            {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />}
+            {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />} 
         </div>
         
         

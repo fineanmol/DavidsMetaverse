@@ -12,7 +12,6 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  pointer-events: auto;
 }
 .scroll {
   height: 500vh;
@@ -20,7 +19,7 @@ body,
   top: 0;
   left: 0;
   overflow-y: auto;
-  pointer-events: auto;
+  pointer-events: none;
 }
 .dot {
   position: sticky;
