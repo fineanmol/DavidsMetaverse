@@ -1,25 +1,15 @@
-import * as THREE from 'three'
 import { useRef, useState, useEffect, Suspense } from 'react'
-import { Canvas, useFrame, useThree, addEffect } from '@react-three/fiber'
-import { useProgress, PerformanceMonitor, ScrollControls, Scroll, useCursor, MeshReflectorMaterial, CameraShake, Text, Preload,useScroll,Image as ImageImpl } from '@react-three/drei'
-import {
-  View,
-  Bounds,
-  OrthographicCamera,
-  OrbitControls,
-  PerspectiveCamera,
-  Environment,
-  ArcballControls,
-  PivotControls,
-  Html,
-  Center
-} from '@react-three/drei'
-import { Projects } from './Projects'
+import { Canvas, addEffect } from '@react-three/fiber'
+import { useProgress, PerformanceMonitor,Image as ImageImpl } from '@react-three/drei'
+import {View,OrthographicCamera,Environment} from '@react-three/drei'
+
+import { Overlay } from './Overlay'
 import { ResponsiveAppBar } from './Navbar'
 import { Intro } from './Intro'
-import { Soda } from './Models'
 import { Skills } from './Skills'
-import { Overlay } from './Overlay'
+import { Experiences } from './Experiences'
+import { Projects } from './Projects'
+
 import Lenis from 'lenis'
 import Snap from 'lenis/snap'
 
@@ -46,6 +36,7 @@ const snap = new Snap(lenis, {
 snap.add(window.innerHeight);
 snap.add(window.innerHeight * 2);
 snap.add(window.innerHeight * 3);
+snap.add(window.innerHeight * 4);
 
 addEffect((t) => lenis.raf(t))
 
@@ -78,29 +69,17 @@ export function  App() {
               <Intro />
             </View>
             <View index={1} className='View'>
-                <OrthographicCamera makeDefault position={[0, 0, 30]} zoom={150} />
-                <Skills />
+              <Skills />
             </View>
             <View index={2} className='View'>
+              <Experiences />
+            </View> 
+            <View index={3} className='View'>
               <Projects />
             </View>      
-            <View index={3} className='View'>
-              <Lights preset="city" />
-              <color attach="background" args={["#fff"]} />
-              <PerspectiveCamera makeDefault position={[0, 0, 4]} />
-              <Lights preset="dawn" />
-              <Soda scale={3} position={[0, -0.75, 0]} />
-            </View>
             <View index={4} className='View'>
-              <Lights preset="city" />
-              <color attach="background" args={['#fff']} />
-                <PerspectiveCamera makeDefault position={[-1, 1, 1]} fov={25} />
-                <Lights preset="warehouse" />
-                <PivotControls depthTest={false} scale={0.15} anchor={[0, 0, 0]}>
-                  <Center>
-                    <Soda wireframe />
-                  </Center>
-                </PivotControls>
+            <Lights preset="dawn" />
+              {/* <Contact /> */}
             </View>
 
             {/* ThreeD */}

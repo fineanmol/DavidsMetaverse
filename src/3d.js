@@ -14,7 +14,7 @@ import {
   Html,
   Center
 } from '@react-three/drei'
-import { Projects } from './Projects'
+import { Projects } from './Experiences'
 import { Intro } from './Intro'
 import { Soda } from './Models'
 import { Skills } from './Skills'
