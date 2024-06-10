@@ -6,7 +6,7 @@ import { generate } from 'random-words'
 
 function Word({ children, ...props }) {
   const color = new THREE.Color()
-  const fontProps = { font: '/Inter-Bold.woff', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
+  const fontProps = { font: 'Fonts/Inter-Bold.woff', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
   const ref = useRef()
   const [hovered, setHovered] = useState(false)
   const over = (e) => (e.stopPropagation(), setHovered(true))
@@ -18,7 +18,7 @@ function Word({ children, ...props }) {
   }, [hovered])
   // Tie component to the render-loop
   useFrame(({ camera }) => {
-    ref.current.material.color.lerp(color.set(hovered ? '#fa2720' : 'white'), 0.1)
+    ref.current.material.color.lerp(color.set(hovered ? '#fa2720' : 'black'), 0.1)
   })
   return (
     <Billboard {...props}>
@@ -41,15 +41,10 @@ function Cloud({ count = 4, radius = 20 }) {
   return words.map(([pos, word], index) => <Word key={index} position={pos} children={word} />)
 }
 
-export default function App() {
+export function Skills() {
   return (
     <>
-      <fog attach="fog" args={['#202025', 0, 80]} />
-      <Suspense fallback={null}>
-        <group rotation={[10, 10.5, 10]}>
-          <Cloud count={8} radius={20} />
-        </group>
-      </Suspense>
+      <Cloud count={8} radius={20} />
       <TrackballControls />
     </>
   )
