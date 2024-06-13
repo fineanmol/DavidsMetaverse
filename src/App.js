@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect, Suspense } from 'react'
 import { Canvas, addEffect } from '@react-three/fiber'
-import { useProgress, PerformanceMonitor,Image as ImageImpl } from '@react-three/drei'
-import {View,OrthographicCamera,Environment} from '@react-three/drei'
+import { useProgress, PerformanceMonitor,Image as ImageImpl, Preload, PivotControls } from '@react-three/drei'
+import {View,OrthographicCamera,PerspectiveCamera, OrbitControls, Environment} from '@react-three/drei'
+import { hatch } from 'ldrs'
 
 import { Overlay } from './Overlay'
 import { ResponsiveAppBar } from './Navbar'
@@ -40,6 +41,8 @@ snap.add(window.innerHeight * 4);
 
 addEffect((t) => lenis.raf(t))
 
+hatch.register()
+
 // const audio = new Audio("./audios/Song Of Unity.mp3");
 export function  App() {
   const [start, setStart] = useState(false);
@@ -52,56 +55,54 @@ export function  App() {
   //     audio.play();
   //   }
   // }, [start]);  
-
   
-  return (
-    <>
-        
-        <div className="container" ref={container} id='container'>
-          
 
+  const handlePointerOver = (e) => {console.log(e);}
+  const handlPointerClicked = (e) => {console.log(e)}
+  return (
+        <>
+          <div className="container" ref={container} id='container'>
             {/* Views */}
             <View index={0} className='View' id="Intro" >
               <Lights preset="dawn" />
-              <Environment files={'/aerodynamics_workshop_1k.hdr'} baackground blur={0.5} />
               <color attach="background" args={["#fff"]} />
-              <OrthographicCamera makeDefault position = {[11, 18, 20]} zoom= {70} gl={{ preserveDrawingBuffer: true }}/>
+              <OrthographicCamera makeDefault fov={90} position = {[11, 100, 100]} zoom= {50} gl={{ preserveDrawingBuffer: true }}/>
               <Intro />
             </View>
-            <View index={1} className='View'>
+            <View index={1}  onClick={handlPointerClicked} onPointerOver={handlePointerOver} className='View'>
+              <PerspectiveCamera makeDefault fov={90} position={[0,0, 30]}/>
+              <fog attach="fog" args={['#202025', 0, 80]} />
               <Skills />
+              <OrbitControls autoRotate={"off"} enableZoom={false} enablePan={false} enableDamping dampingFactor={0.1} rotateSpeed={0.25} />
             </View>
             <View index={2} className='View'>
               <Experiences />
             </View> 
             <View index={3} className='View'>
-              <Projects />
+              {/* <Projects /> */}
             </View>      
             <View index={4} className='View'>
             <Lights preset="dawn" />
               {/* <Contact /> */}
-            </View>
-
-            {/* ThreeD */}
+           </View>
+          </div>
           
-            <Canvas frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} eventPrefix='client' className='canvas'>
-              <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
-                <Suspense fallback={null}>
-                  <View.Port /> 
-                </Suspense>
-              </PerformanceMonitor>
-            </Canvas>
-            {start && <Overlay /> }
-            {start && <ResponsiveAppBar lenis={lenis}/>}
-            
-            
+          {/* ThreeD */}
+          
+          <Canvas style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, overflow: 'hidden' }}frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} eventPrefix="client" >
 
+            <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
+                <View.Port /> 
+                <Preload all /> 
+                {/* <Box position={[0, 0, 0]} /> */}
+            </PerformanceMonitor>
+          </Canvas>
+
+            {start && <Overlay /> }
+            {start && <ResponsiveAppBar lenis={lenis}/>} 
             {!start && <LoadingScreen started={start} onStarted={() => setStart(true)} />} 
-        </div>
+        </>
         
-        
-        
-    </>
     //   )
     // }
   )
@@ -119,15 +120,9 @@ const LoadingScreen = ({ started, onStarted }) => {
   }, [progress, started, onStarted]);
   console.log("loading screen")
   return (
-    <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}>
-      <div className="loadingScreen__progress">
-        <div
-          className="loadingScreen__progress__value"
-          style={{
-            width: `${progress}%`,
-          }}
-        />
-      </div>
+    <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}> 
+      <div className='loadingScreen__progress'> <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch> </div>
+      <div> {progress}</div>   
     </div>
   );
 };

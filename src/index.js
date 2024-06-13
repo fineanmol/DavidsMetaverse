@@ -5,13 +5,4 @@ import { App } from './App'
 import { ResponsiveAppBar } from './Navbar'
 import { Overlay } from './Overlay'
 
-createRoot(document.getElementById('root')).render(
-
-<>
-    <App />
-    {/* 
-    <ResponsiveAppBar/> */}
-</>
-
-
-)
+createRoot(document.getElementById('root')).render(<App />)

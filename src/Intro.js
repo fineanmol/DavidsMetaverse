@@ -61,11 +61,11 @@ export function Intro() {
   );
 }
 
-const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5, config }) => (
+const Grid = ({ number = 6.5, lineWidth = 0.026, height = 0.5, config }) => (
   // Renders a grid and crosses as instances
   <Instances position={[0, -1.02, 0]}>
     <planeGeometry args={[lineWidth, height]}/>
-    <meshStandardMaterial color={"#0DF9EE"} emissive={"#0DF9EE"} emissiveIntensity={1} toneMapped={false} />
+    <meshStandardMaterial color={"#000"} emissive={"#000"} emissiveIntensity={1} toneMapped={false} />
     {Array.from({ length: number }, (_, y) =>
       Array.from({ length: number }, (_, x) => (
         <group key={x + ':' + y} position={[x * 2 - Math.floor(number / 2) * 2, -0.01, y * 2 - Math.floor(number / 2) * 2]}>
@@ -74,7 +74,6 @@ const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5, config }) => (
         </group>
       ))
     )}
-    <gridHelper args={[100, 100, '#bbb', '#bbb']} position={[0, -0.01, 0]} />
   </Instances>
 )
 

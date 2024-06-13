@@ -12,7 +12,7 @@ export function Overlay(){
     </div>
     <div style={{ height: "100vh" }}>
       <div class="dot">
-        <h1>Skills</h1>
+        <h1>My Toolset</h1>
         Headphones are a pair of small loudspeaker drivers worn on or around the head over a user's ears.
       </div>
     </div>
