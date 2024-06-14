@@ -10,6 +10,7 @@ import { Intro } from './Intro'
 import { Skills } from './Skills'
 import { Experiences } from './Experiences'
 import { Projects } from './Projects'
+import { Contact } from './Contact'
 
 import Lenis from 'lenis'
 import Snap from 'lenis/snap'
@@ -82,8 +83,7 @@ export function  App() {
               {/* <Projects /> */}
             </View>      
             <View index={4} className='View'>
-            <Lights preset="dawn" />
-              {/* <Contact /> */}
+              <Contact />
            </View>
           </div>
           
@@ -121,8 +121,7 @@ const LoadingScreen = ({ started, onStarted }) => {
   console.log("loading screen")
   return (
     <div className={`loadingScreen ${started ? "loadingScreen--started" : ""}`}> 
-      <div className='loadingScreen__progress'> <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch> </div>
-      <div> {progress}</div>   
+      <div className='loadingScreen__progress'> <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch> </div> 
     </div>
   );
 };
