@@ -4,7 +4,7 @@ export function Overlay(){
   return(  
   <div
     className="scroll">
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "100vh", width: "100vw"}}>
       <div class="dot">
         <h1>Welcome to my side of the Metaverse</h1>
         Virtual reality (VR) is a simulated experience that can be similar to or completely different from the real world.

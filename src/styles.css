@@ -8,23 +8,27 @@ html,
 body,
 #root,
 .scroll {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
+  /* overflow: auto; */
   padding: 0;
   pointer-events: auto;
 }
 .scroll {
+  width: 100vw;
   height: 500vh;
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
-  overflow-y: auto;
+  overflow-y: scroll;
+  overflow-x: scroll;
   pointer-events: none;
+  z-index: 10;
 }
 .dot {
   position: sticky;
-  top: 0px;
+  top: 0px; 
   display: inline-block;
   max-width: 600px;
   padding: 0;
@@ -66,22 +70,33 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;  /* Enable vertical scroll snapping */
+  right:0;
+  width: 100vw;
+  height: 500vh;  /* Enable vertical scroll snapping */
+  white-space: nowrap;
+  overflow-x: hidden;
+  /* overflow-x: auto; */
+
 }
 .View{
   width: 100vw; /* Full viewport width */
   height: 100vh; /* Full viewport height *//* Snap to start of each view */
-  scroll-snap-align: start;
   pointer-events: auto;
 }
+.View-Horizontal{
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height *//* Snap to start of each view */
+  white-space: nowrapaa;
+  overflow-y: hidden;
+  overflow-x: auto;
+  pointer-events: auto;
+
+}
 .View-HorizontalScroll{
-
+  white-space: nowrap;
    /* Full viewport width */
-   width: 100vw;
+   width: 200vw;
   height: 100vh; /* Full viewport height */
-  overflow: hidden;
-
 }
 
 svg {
