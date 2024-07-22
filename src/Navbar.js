@@ -197,7 +197,6 @@ export function ResponsiveAppBar(lenis, props) {
 }
 function ScrollTop(props) {
   const lenis = props.lenis.lenis
-  console.log(lenis)
   const { children, window } = props;
   // Note that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.

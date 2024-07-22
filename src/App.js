@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, Suspense } from 'react'
 import { Canvas, addEffect } from '@react-three/fiber'
 import { useProgress, PerformanceMonitor,Image as ImageImpl, Preload, PivotControls } from '@react-three/drei'
 import {View,OrthographicCamera,PerspectiveCamera, OrbitControls, Environment} from '@react-three/drei'
-import { hatch } from 'ldrs'
+// import { hatch } from 'ldrs'
 
 import { Overlay } from './Overlay'
 import { ResponsiveAppBar } from './Navbar'
@@ -21,6 +21,7 @@ const lenis = new Lenis(
     syncTouch: true,
     lerp: 0.08,
     smoothWheel: true,
+    autoResize: true,
   })
   
 
@@ -40,23 +41,71 @@ snap.add(window.innerHeight * 4);
 
 addEffect((t) => lenis.raf(t))
 
-hatch.register()
+// hatch.register()
 
 // const audio = new Audio("./audios/Song Of Unity.mp3");
 export function  App() {
   const [start, setStart] = useState(false);
   const [dpr, setDpr] = useState(1.5)
+  const horizontalRef = useRef(null)
+  const canvas = useRef()
+  const isScrollDisabled = useRef(false);
   //scrollcontrol
   const container = useRef()
-  lenis.on('scroll', (e) => {
-    console.log(e.targetScroll * 0.001)})
+  
 
   // useEffect(() => {
   //   if (start) {
   //     audio.play();
   //   }
   // }, [start]);  
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log(`scrolling with ${isScrollDisabled.current}`)
+      const horizontalElement = horizontalRef.current
+      if (horizontalElement) {
+        const rect = horizontalElement.getBoundingClientRect()
+        console.log((rect.bottom))
+        if (rect.top <= 1.5 && rect.top >=0) {
+          // && rect.bottom >= window.innerHeight-5
+          lenis.orientation = "horizontal"
+          console.log("Disabling scroll")
+          if(!isScrollDisabled.current){
+            disableScroll()
+          }
+        } else {
+          lenis.orientation = "vertical"
+          if(isScrollDisabled.current){
+            enableScroll()
+          }
+          // Switch back to vertical scrolling
+          // lenis.off('scroll', (e) => {})
+          // enableScroll()
+        }
+      }
+    }
+    const disableScroll = () => {
+      console.log("disabling scroll")
+      horizontalRef.current.classList.add('content');
+      isScrollDisabled.current = true;
+    };
   
+    const enableScroll = () => {
+      console.log("enabling scroll")
+      horizontalRef.current.classList.remove('content');
+      isScrollDisabled.current = false;
+    };
+
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {window.removeEventListener('scroll', handleScroll)
+  }
+  
+  }, [])
+
+ 
 
   const handlePointerOver = (e) => {console.log(e);}
   const handlPointerClicked = (e) => {console.log(e)}
@@ -79,7 +128,7 @@ export function  App() {
             <View index={2} className='View'>
               <Experiences />
             </View> 
-            <div className='View-Horizontal'>
+            <div className='View-Horizontal'  ref={horizontalRef}>
               <View index={3} className='View-HorizontalScroll'>
                 <Items />
               </View> 
@@ -92,7 +141,7 @@ export function  App() {
           
           {/* ThreeD */}
           
-          <Canvas style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0}}frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} eventPrefix="client" >
+          <Canvas style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0}}frameloop="demand" gl={{antialias: false}} dpr={dpr} shadows  eventSource={document.getElementById('root')} eventPrefix="client" ref={canvas}>
 
             <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
                 <View.Port /> 
@@ -158,21 +207,59 @@ const state = proxy({
   urls: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 5, 7, 8, 2, 4, 9, 6].map((u) => `Skills/${u}.jpg`)
 })
 
+
+// function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
+//   const ref = useRef()
+//   const scroll = useScroll()
+//   const { clicked, urls } = useSnapshot(state)
+//   const [hovered, hover] = useState(false)
+//   const click = () => (state.clicked = index === clicked ? null : index)
+//   const over = () => hover(true)
+//   const out = () => hover(false)
+//   useFrame((state, delta) => {
+//     easing.damp3(ref.current.scale, [clicked === index ? 4.7 : scale[0], clicked === index ? 5 : 4 , 1], 0.15, delta)
+//     ref.current.material.scale[0] = ref.current.scale.x
+//     if (clicked !== null && index < clicked) easing.damp(ref.current.position, 'x', position[0] - 2, 0.15, delta)
+//     if (clicked !== null && index > clicked) easing.damp(ref.current.position, 'x', position[0] + 2, 0.15, delta)
+//     if (clicked === null || clicked === index) easing.damp(ref.current.position, 'x', position[0], 0.15, delta)
+//     // easing.damp(ref.current.material, 'grayscale', hovered || clicked === index ? 0 : Math.max(0, 1 - y), 0.15, delta)
+//     easing.dampC(ref.current.material.color, hovered || clicked === index ? 'white' : '#aaa', hovered ? 0.3 : 0.15, delta)
+//   })
+//   return <Image ref={ref} {...props} position={position} scale={scale} onClick={click} onPointerOver={over} onPointerOut={out} />
+// }
+
+
+// function Items({ w = 0.7, gap = 0.5 }) {
+//   const { urls } = useSnapshot(state)
+//   const ref = useRef()
+//   const { width } = useThree((state) => state.viewport)
+//   const xW = w + gap *2
+//   return (
+//     <ScrollControls horizontal damping={0.1} pages={(width - xW + urls.length * xW) / width}>
+//       <Minimap />
+//       <Scroll>
+    
+//       {urls.map((url, i) => <Item key={i} index={i} position={[(i-4)*3 * xW, 0, 0]} scale={[w*4, 4, 1]} url={url} />)}
+// </Scroll>
+//     </ScrollControls>
+//   );}
+
+
 function Minimap() {
   const ref = useRef()
   const scroll = useScroll()
   const { urls } = useSnapshot(state)
   const { height } = useThree((state) => state.viewport)
-  // useFrame((state, delta) => {
-  //   ref.current.children.forEach((child, index) => {
-  //     // Give me a value between 0 and 1
-  //     //   starting at the position of my item
-  //     //   ranging across 4 / total length
-  //     //   make it a sine, so the value goes from 0 to 1 to 0.
-  //     const y = scroll.curve(index / urls.length - 1.5 / urls.length, 4 / urls.length)
-  //     easing.damp(child.scale, 'y', 0.15 + y / 6, 0.15, delta)
-  //   })
-  // })
+  useFrame((state, delta) => {
+    ref.current.children.forEach((child, index) => {
+      // Give me a value between 0 and 1
+      //   starting at the position of my item
+      //   ranging across 4 / total length
+      //   make it a sine, so the value goes from 0 to 1 to 0.
+      const y = scroll.curve(index / urls.length - 1.5 / urls.length, 4 / urls.length)
+      easing.damp(child.scale, 'y', 0.15 + y / 6, 0.15, delta)
+    })
+  })
   return (
     <group ref={ref}>
       {urls.map((_, i) => (
@@ -184,39 +271,34 @@ function Minimap() {
 
 function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
   const ref = useRef()
-  const scroll = useScroll()
+  const scroll = lenis.scroll
   const { clicked, urls } = useSnapshot(state)
   const [hovered, hover] = useState(false)
   const click = () => (state.clicked = index === clicked ? null : index)
   const over = () => hover(true)
   const out = () => hover(false)
-  // useFrame((state, delta) => {
-  //   const y = scroll.curve(index / urls.length - 1.5 / urls.length, 4 / urls.length)
-  //   easing.damp3(ref.current.scale, [clicked === index ? 4.7 : scale[0], clicked === index ? 5 : 4 + y, 1], 0.15, delta)
-  //   ref.current.material.scale[0] = ref.current.scale.x
-  //   ref.current.material.scale[1] = ref.current.scale.y
-  //   if (clicked !== null && index < clicked) easing.damp(ref.current.position, 'x', position[0] - 2, 0.15, delta)
-  //   if (clicked !== null && index > clicked) easing.damp(ref.current.position, 'x', position[0] + 2, 0.15, delta)
-  //   if (clicked === null || clicked === index) easing.damp(ref.current.position, 'x', position[0], 0.15, delta)
-  //   easing.damp(ref.current.material, 'grayscale', hovered || clicked === index ? 0 : Math.max(0, 1 - y), 0.15, delta)
-  //   easing.dampC(ref.current.material.color, hovered || clicked === index ? 'white' : '#aaa', hovered ? 0.3 : 0.15, delta)
-  // })
+  useFrame((state, delta) => {
+    const y = scroll * 0.001
+    easing.damp3(ref.current.scale, [clicked === index ? 4.7 : scale[0], clicked === index ? 5 : 4 + y, 1], 0.15, delta)
+    ref.current.material.scale[0] = ref.current.scale.x
+    ref.current.material.scale[1] = ref.current.scale.y
+    if (clicked !== null && index < clicked) easing.damp(ref.current.position, 'x', position[0] - 2, 0.15, delta)
+    if (clicked !== null && index > clicked) easing.damp(ref.current.position, 'x', position[0] + 2, 0.15, delta)
+    if (clicked === null || clicked === index) easing.damp(ref.current.position, 'x', position[0], 0.15, delta)
+    easing.damp(ref.current.material, 'grayscale', hovered || clicked === index ? 0 : Math.max(0, 1 - y), 0.15, delta)
+    easing.dampC(ref.current.material.color, hovered || clicked === index ? 'white' : '#aaa', hovered ? 0.3 : 0.15, delta)
+  })
   return <Image ref={ref} {...props} position={position} scale={scale} onClick={click} onPointerOver={over} onPointerOut={out} />
 }
 
-function Items({ w = 0.7, gap = 0.5 }) {
+function Items({ w = 0.7, gap = 0.15 }) {
   const { urls } = useSnapshot(state)
-  const ref = useRef()
   const { width } = useThree((state) => state.viewport)
-  const xW = w + gap *2
+  const xW = w + gap * 10
   return (
-    // <ScrollControls horizontal damping={0.1} pages={(width - xW + urls.length * xW) / width}>
-    //   <Minimap />
-    //   <Scroll>
-    
     <>
 
-      {urls.map((url, i) => <Item key={i} index={i} position={[(i-4)*3 * xW, 0, 0]} scale={[w*4, 4, 1]} url={url} />)}
-    </>
-    // </ScrollControls>
-  );}
+{urls.map((url, i) => <Item key={i} index={i} position={[(i-4)*3 * xW, 0, 0]} scale={[w*6, 4, 1]} url={url} />)}
+        </>
+  )
+}

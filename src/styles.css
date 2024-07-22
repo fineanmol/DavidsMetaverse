@@ -39,6 +39,30 @@ body,
   letter-spacing: 1.5px;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+.content {
+  animation: marqueeLeft 15s cubic-bezier(0,0,1,1) infinite;}
+
+  @keyframes marqueeRight {
+    from {
+      transform: translateX(50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes marqueeLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
 .dot > h1 {
   -webkit-font-smoothing: auto;
   color: black;
@@ -74,7 +98,7 @@ body {
   width: 100vw;
   height: 500vh;  /* Enable vertical scroll snapping */
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow-x: auto;
   /* overflow-x: auto; */
 
 }
@@ -84,9 +108,9 @@ body {
   pointer-events: auto;
 }
 .View-Horizontal{
-  width: 100vw; /* Full viewport width */
+  width: 500vw; /* Full viewport width */
   height: 100vh; /* Full viewport height *//* Snap to start of each view */
-  white-space: nowrapaa;
+  white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
   pointer-events: auto;
@@ -95,7 +119,7 @@ body {
 .View-HorizontalScroll{
   white-space: nowrap;
    /* Full viewport width */
-   width: 200vw;
+   width: 100%;
   height: 100vh; /* Full viewport height */
 }
 
