@@ -11,7 +11,7 @@ import { Skills } from './Skills'
 import { Experiences } from './Experiences'
 import { Projects } from './Projects'
 import { Contact } from './Contact'
-
+import { ScrollProjects } from './ScrollProjects'
 import Lenis from 'lenis'
 import Snap from 'lenis/snap'
 
@@ -25,21 +25,31 @@ const lenis = new Lenis(
   })
   
 
-const snap = new Snap(lenis, {
-  type: 'mandatory', // default
-  velocityThreshold: 1, // default
-  onSnapStart: () => console.log('Snap started'),
-  onSnapComplete: () => console.log('Snap completed'),
-  lerp: 0.05, // default
-  easing: (t) => t, // default
-  duration: 1, 
-})
-snap.add(window.innerHeight);
-snap.add(window.innerHeight * 2);
-snap.add(window.innerHeight * 3);
-snap.add(window.innerHeight * 4);
+  const snapConfig = {
+    type: 'mandatory',
+    velocityThreshold: 1,
+    onSnapStart: () => console.log('Snap started'),
+    onSnapComplete: () => console.log('Snap completed'),
+    lerp: 0.05,
+    easing: (t) => t,
+    duration: 1,
+  }
+  
+  const snap = new Snap(lenis, snapConfig)
 
-addEffect((t) => lenis.raf(t))
+  // Calculate snap points dynamically
+  const numSections = 5 // Adjust based on your actual number of sections
+  const snapPoints = Array.from({ length: numSections }, (_, i) => window.innerHeight * i)
+  snapPoints.forEach(point => snap.add(point))
+  
+  // Add resize listener to update snap points
+  window.addEventListener('resize', () => {
+    snap.removeAll()
+    snapPoints.forEach((_, i) => snap.add(window.innerHeight * i))
+  })
+  
+  // Add Lenis to the render loop
+  addEffect((time) => lenis.raf(time))
 
 // hatch.register()
 
@@ -54,56 +64,56 @@ export function  App() {
   const container = useRef()
   
 
-  // useEffect(() => {
-  //   if (start) {
-  //     audio.play();
-  //   }
-  // }, [start]);  
+  // // useEffect(() => {
+  // //   if (start) {
+  // //     audio.play();
+  // //   }
+  // // }, [start]);  
 
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log(`scrolling with ${isScrollDisabled.current}`)
-      const horizontalElement = horizontalRef.current
-      if (horizontalElement) {
-        const rect = horizontalElement.getBoundingClientRect()
-        console.log((rect.bottom))
-        if (rect.top <= 1.5 && rect.top >=0) {
-          // && rect.bottom >= window.innerHeight-5
-          lenis.orientation = "horizontal"
-          console.log("Disabling scroll")
-          if(!isScrollDisabled.current){
-            disableScroll()
-          }
-        } else {
-          lenis.orientation = "vertical"
-          if(isScrollDisabled.current){
-            enableScroll()
-          }
-          // Switch back to vertical scrolling
-          // lenis.off('scroll', (e) => {})
-          // enableScroll()
-        }
-      }
-    }
-    const disableScroll = () => {
-      console.log("disabling scroll")
-      horizontalRef.current.classList.add('content');
-      isScrollDisabled.current = true;
-    };
+  // // useEffect(() => {
+  // //   const handleScroll = () => {
+  // //     console.log(`scrolling with ${isScrollDisabled.current}`)
+  // //     const horizontalElement = horizontalRef.current
+  // //     if (horizontalElement) {
+  // //       const rect = horizontalElement.getBoundingClientRect()
+  // //       console.log((rect.bottom))
+  // //       if (rect.top <= 1.5 && rect.top >=0) {
+  // //         // && rect.bottom >= window.innerHeight-5
+  // //         lenis.orientation = "horizontal"
+  // //         console.log("Disabling scroll")
+  // //         if(!isScrollDisabled.current){
+  // //           disableScroll()
+  // //         } 
+  // //       } else {
+  // //         lenis.orientation = "vertical"
+  // //         if(isScrollDisabled.current){
+  // //           enableScroll()
+  // //         }
+  // //         // Switch back to vertical scrolling
+  // //         // lenis.off('scroll', (e) => {})
+  // //         // enableScroll()
+  // //       }
+  // //     }
+  // //   }
+  //   const disableScroll = () => {
+  //     console.log("disabling scroll")
+  //     horizontalRef.current.classList.add('content');
+  //     isScrollDisabled.current = true;
+  //   };
   
-    const enableScroll = () => {
-      console.log("enabling scroll")
-      horizontalRef.current.classList.remove('content');
-      isScrollDisabled.current = false;
-    };
+  //   const enableScroll = () => {
+  //     console.log("enabling scroll")
+  //     horizontalRef.current.classList.remove('content');
+  //     isScrollDisabled.current = false;
+  //   };
 
 
-    window.addEventListener('scroll', handleScroll)
+  //   window.addEventListener('scroll', handleScroll)
 
-    return () => {window.removeEventListener('scroll', handleScroll)
-  }
+  //   return () => {window.removeEventListener('scroll', handleScroll)
+  // }
   
-  }, [])
+  // }, [])
 
  
 
@@ -128,11 +138,17 @@ export function  App() {
             <View index={2} className='View'>
               <Experiences />
             </View> 
-            <div className='View-Horizontal'  ref={horizontalRef}>
+            {/* <div className='View-Horizontal'  ref={horizontalRef}>
               <View index={3} className='View-HorizontalScroll'>
                 <Items />
               </View> 
             </div>
+             */}
+             <View index={3} className='View'>
+             <PerspectiveCamera makeDefault fov={10} position={[0,0, 10]}/>
+             {/* <OrbitControls autoRotate={"off"} enableZoom={false} enablePan={false} enableDamping dampingFactor={0.1} rotateSpeed={0.25} /> */}
+              <ScrollProjects lenis={lenis} />
+             </View>
      
             <View index={4} className='View'>
               <Contact />

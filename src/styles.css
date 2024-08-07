@@ -21,8 +21,6 @@ body,
   position: sticky;
   top: 0;
   left: 0;
-  overflow-y: scroll;
-  overflow-x: scroll;
   pointer-events: none;
   z-index: 10;
 }
@@ -98,8 +96,6 @@ body {
   width: 100vw;
   height: 500vh;  /* Enable vertical scroll snapping */
   white-space: nowrap;
-  overflow-x: auto;
-  /* overflow-x: auto; */
 
 }
 .View{
