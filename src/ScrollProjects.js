@@ -99,7 +99,7 @@ function Carousel({ radius = 2, count = 8, setExpandedCard, expandedCard }) {
         <Card
           key={i}
           index={i}
-          url={`/img${Math.floor(i % 10) + 1}_.jpg`}
+          url={`/Projects/img${Math.floor(i % 10) + 1}_.jpg`}
           position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
           rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
           setExpandedCard={setExpandedCard}
@@ -180,7 +180,7 @@ function ExpandedCardUI({ index, onClose, onNavigate }) {
       </Text>
       
       {/* Left arrow button */}
-      <group position={[-3, 0, 3]} onClick={() => onNavigate(-1)}>
+      <group position={[-2, 0, 3]} onClick={() => onNavigate(-1)}>
         <mesh>
           <circleGeometry args={[0.2, 32]} />
           <meshBasicMaterial color="white" />
@@ -191,7 +191,7 @@ function ExpandedCardUI({ index, onClose, onNavigate }) {
       </group>
       
       {/* Right arrow button */}
-      <group position={[3, 0, 3]} onClick={() => onNavigate(1)}>
+      <group position={[2, 0, 3]} onClick={() => onNavigate(1)}>
         <mesh>
           <circleGeometry args={[0.2, 32]} />
           <meshBasicMaterial color="white" />
